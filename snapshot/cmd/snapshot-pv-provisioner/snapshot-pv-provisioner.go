@@ -32,6 +32,7 @@ import (
 	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/volume"
 	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/volume/awsebs"
 	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/volume/cinder"
+	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/volume/csi"
 	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/volume/gcepd"
 	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/volume/gluster"
 	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/volume/hostpath"
@@ -192,6 +193,7 @@ var (
 	id              = flag.String("id", "", "Unique provisioner identity")
 	cloudProvider   = flag.String("cloudprovider", "", "aws|gce|openstack")
 	cloudConfigFile = flag.String("cloudconfig", "", "Path to a Cloud config. Only required if cloudprovider is set.")
+	csiDriverName   = flag.String("csi-driver-name", "", "CSI Driver name.")
 	volumePlugins   = make(map[string]volume.Plugin)
 )
 
@@ -277,5 +279,8 @@ func buildVolumePlugins() {
 	}
 	volumePlugins[gluster.GetPluginName()] = gluster.RegisterPlugin()
 	volumePlugins[hostpath.GetPluginName()] = hostpath.RegisterPlugin()
+	if len(*csiDriverName) != 0 {
+		volumePlugins[csi.GetPluginName()] = csi.RegisterPlugin(*csiDriverName, *kubeconfig)
+	}
 
 }

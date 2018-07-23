@@ -228,6 +228,14 @@ type GCEPersistentDiskSnapshotSource struct {
 	SnapshotName string `json:"snapshotId"`
 }
 
+// CSIVolumeSnapshotSource is CSI volume snapshot source
+type CSIVolumeSnapshotSource struct {
+	// Unique id of the csi volume snapshot resource. Used to identify the snapshot in CSI
+	SnapshotID string `json:"snapshotId"`
+	// CSI Driver name. Used to identify of the snapshot driver.
+	DriverName string `json:"driverName"`
+}
+
 // VolumeSnapshotDataSource represents the actual location and type of the snapshot. Only one of its members may be specified.
 type VolumeSnapshotDataSource struct {
 	// HostPath represents a directory on the host.
@@ -251,6 +259,9 @@ type VolumeSnapshotDataSource struct {
 	// CinderVolumeSnapshotSource represents Cinder snapshot resource
 	// +optional
 	CinderSnapshot *CinderVolumeSnapshotSource `json:"cinderVolume,omitempty"`
+	// CSIVolumeSnapshotSource represents CSI snapshot resource
+	// +optional
+	CSISnapshot *CSIVolumeSnapshotSource `json:"csiVolume,omitempty"`
 }
 
 // GetSupportedVolumeFromPVSpec gets supported volume from PV spec
@@ -269,6 +280,9 @@ func GetSupportedVolumeFromPVSpec(spec *core_v1.PersistentVolumeSpec) string {
 	}
 	if spec.Glusterfs != nil {
 		return "glusterfs"
+	}
+	if spec.CSI != nil {
+		return "csi"
 	}
 	return ""
 }
@@ -289,6 +303,9 @@ func GetSupportedVolumeFromSnapshotDataSpec(spec *VolumeSnapshotDataSpec) string
 	}
 	if spec.GlusterSnapshotVolume != nil {
 		return "glusterfs"
+	}
+	if spec.CSISnapshot != nil {
+		return "csi"
 	}
 	return ""
 }

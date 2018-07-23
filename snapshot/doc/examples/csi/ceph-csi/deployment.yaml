@@ -1,0 +1,43 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: snapshot-controller
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: snapshot-controller
+    spec:
+      nodeSelector:
+        snapshot: support
+      serviceAccountName: snapshot-controller-runner
+      containers:
+        - name: snapshot-controller
+          image: external_storage/snapshot-controller
+          imagePullPolicy: "Always"
+          args: ["-csi-driver-name", "csi-rbdplugin"]
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /var/lib/kubelet/plugins/csi-rbdplugin
+            - name: csi-ceph-config
+              mountPath: /var/lib/kubelet/plugins/csi-rbdplugin/parameters
+        - name: snapshot-provisioner
+          image: external_storage/snapshot-provisioner
+          imagePullPolicy: "Always"
+          args: ["-csi-driver-name", "csi-rbdplugin"]
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /var/lib/kubelet/plugins/csi-rbdplugin
+            - name: csi-ceph-config
+              mountPath: /var/lib/kubelet/plugins/csi-rbdplugin/parameters
+      volumes:
+        - name: socket-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins/csi-rbdplugin
+            type: DirectoryOrCreate
+        - name: csi-ceph-config
+          configMap:
+            name: csi-ceph-config

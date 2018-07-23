@@ -13,7 +13,7 @@
 # limitations under the License.
 
 ifeq ($(REGISTRY),)
-	REGISTRY = quay.io/external_storage/
+	REGISTRY = registry.ibm.samsungcnp.net:15000/external_storage/
 endif
 ifeq ($(VERSION),)
 	VERSION = latest

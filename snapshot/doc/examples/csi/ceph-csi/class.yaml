@@ -1,0 +1,12 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: snapshot-promoter
+parameters:
+    imageFormat: "2"
+    imageFeatures: layering
+    monitors: 172.16.1.14:6789,172.16.1.15:6789,172.16.1.16:6789
+    pool: kube
+    csiProvisionerSecretName: csi-ceph-secret
+    csiProvisionerSecretNamespace: default
+provisioner: volumesnapshot.external-storage.k8s.io/snapshot-promoter

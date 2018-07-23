@@ -16,6 +16,8 @@ Pre-alpha
  - [AWS EBS](doc/examples/aws/README.md)
 
  - [GCE PD](doc/examples/gce/README.md)
+
+ - [CSI](doc/examples/csi/ceph-csi/README.md)
  
 ## Docs
 

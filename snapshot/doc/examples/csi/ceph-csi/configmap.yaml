@@ -1,0 +1,13 @@
+apiVersion: v1
+data:
+  parameters.yaml: |
+    parameters:
+      csiProvisionerSecretName: csi-ceph-secret
+      csiProvisionerSecretNamespace: default
+      imageFeatures: layering
+      imageFormat: "2"
+      monitors: 172.16.1.14:6789,172.16.1.15:6789,172.16.1.16:6789
+      pool: kube
+kind: ConfigMap
+metadata:
+  name: csi-ceph-config
